@@ -4,6 +4,8 @@ import csv
 import copy
 import argparse
 import itertools
+import keyboard
+import pyautogui
 from collections import Counter
 from collections import deque
 
@@ -38,7 +40,9 @@ def get_args():
     return args
 
 
+
 def main():
+
     # Argument parsing #################################################################
     args = get_args()
 
@@ -125,6 +129,8 @@ def main():
         if results.multi_hand_landmarks is not None:
             for hand_landmarks, handedness in zip(results.multi_hand_landmarks,
                                                   results.multi_handedness):
+
+
                 # Bounding box calculation
                 brect = calc_bounding_rect(debug_image, hand_landmarks)
                 # Landmark calculation
@@ -168,6 +174,14 @@ def main():
                     keypoint_classifier_labels[hand_sign_id],
                     point_history_classifier_labels[most_common_fg_id[0][0]],
                 )
+                hand_gesture = keypoint_classifier(pre_processed_landmark_list)
+                point_gesture_id = point_history_classifier(pre_processed_point_history_list)
+
+                if hand_gesture == 2:  # Thumbs up
+                    perform_action("thumbs_up")  # Volume Up
+                elif hand_gesture == 1:  # OK point
+                    perform_action("ok_point")  # Volume Down
+
         else:
             point_history.append([0, 0])
 
@@ -177,9 +191,23 @@ def main():
         # Screen reflection #############################################################
         cv.imshow('Hand Gesture Recognition', debug_image)
 
+
+
+
+
+
+
+
     cap.release()
     cv.destroyAllWindows()
 
+
+
+def perform_action(gesture):
+    if gesture == "thumbs_up":
+        keyboard.press_and_release("volume up")
+    elif gesture == "ok_point":
+        keyboard.press_and_release("volume down")
 
 def select_mode(key, mode):
     number = -1
