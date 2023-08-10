@@ -14,4 +14,3 @@ official Medipipe website for hand Gestures https://developers.google.com/mediap
 
 
 
-
