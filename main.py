@@ -176,7 +176,8 @@ def main():
                 )
                 hand_gesture = keypoint_classifier(pre_processed_landmark_list)
                 point_gesture_id = point_history_classifier(pre_processed_point_history_list)
-
+                # print(hand_gesture)
+               
                 if hand_gesture == 2:  # Thumbs up
                     perform_action("thumbs_up")  # Volume Up
                 elif hand_gesture == 1:  # OK point
@@ -194,10 +195,6 @@ def main():
 
 
 
-
-
-
-
     cap.release()
     cv.destroyAllWindows()
 
@@ -208,6 +205,7 @@ def perform_action(gesture):
         keyboard.press_and_release("volume up")
     elif gesture == "ok_point":
         keyboard.press_and_release("volume down")
+    
 
 def select_mode(key, mode):
     number = -1
