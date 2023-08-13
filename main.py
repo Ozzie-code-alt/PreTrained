@@ -174,14 +174,14 @@ def main():
                     keypoint_classifier_labels[hand_sign_id],
                     point_history_classifier_labels[most_common_fg_id[0][0]],
                 )
-                # hand_gesture = keypoint_classifier(pre_processed_landmark_list)
+                hand_gesture = keypoint_classifier(pre_processed_landmark_list)
                 point_gesture_id = point_history_classifier(pre_processed_point_history_list)
-                # print(hand_gesture)
+                print(hand_gesture)
                 # print(hand_sign_id)
-                # if hand_gesture == "None":  # Thumbs up
-                #     perform_action("thumbs_up")  # Volume Up
-                # elif hand_gesture == "None":  # OK point
-                #     perform_action("ok_point")  # Volume Down
+                if hand_gesture == 2:  # Thumbs up
+                    perform_action("thumbs_up")  # Volume Up
+                elif hand_gesture == 1:  # OK point
+                    perform_action("ok_point")  # Volume Down
                 if point_gesture_id == 1:
                     print("ClockWise")
                 elif point_gesture_id == 2:
