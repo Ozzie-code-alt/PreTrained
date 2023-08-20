@@ -65,7 +65,7 @@ def main():
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands(
         static_image_mode=use_static_image_mode,
-        max_num_hands=1,
+        max_num_hands=2,
         min_detection_confidence=min_detection_confidence,
         min_tracking_confidence=min_tracking_confidence,
     )
@@ -176,12 +176,14 @@ def main():
                 )
                 hand_gesture = keypoint_classifier(pre_processed_landmark_list)
                 point_gesture_id = point_history_classifier(pre_processed_point_history_list)
-                print(hand_gesture)
+                # print(hand_gesture)
                 # print(hand_sign_id)
                 if hand_gesture == 2:  # Thumbs up
                     perform_action("thumbs_up")  # Volume Up
                 elif hand_gesture == 1:  # OK point
                     perform_action("ok_point")  # Volume Down
+                elif hand_gesture == 4:  # OK point
+                    perform_action("GDSC")  # Volume Down
                 if point_gesture_id == 1:
                     print("ClockWise")
                 elif point_gesture_id == 2:
@@ -208,6 +210,8 @@ def perform_action(gesture):
         keyboard.press_and_release("volume up")
     elif gesture == "ok_point":
         keyboard.press_and_release("volume down")
+    elif gesture == "GDSC":
+        keyboard.Key.esc
     
 
 def select_mode(key, mode):
