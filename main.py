@@ -12,7 +12,7 @@ from collections import deque
 import cv2 as cv
 import numpy as np
 import mediapipe as mp
-
+import os
 from utils import CvFpsCalc
 from model import KeyPointClassifier
 from model import PointHistoryClassifier
@@ -101,6 +101,13 @@ def main():
 
     #  ########################################################################
     mode = 0
+    image_counter = 0
+    # Path to the "Images" folder
+    images_folder_path = "Images"
+
+# Create the "Images" folder if it doesn't exist
+    os.makedirs(images_folder_path, exist_ok=True)
+    overlay_image = cv.imread('frame.png')  # Replace with your image's path
 
     while True:
         fps = cvFpsCalc.get()
@@ -124,7 +131,11 @@ def main():
         image.flags.writeable = False
         results = hands.process(image)
         image.flags.writeable = True
-
+        overlay_image_resized = cv.resize(overlay_image, (image.shape[1], image.shape[0]))
+    
+    # Combine the frame and the overlay image
+        combined_frame = cv.addWeighted(image, 1, overlay_image_resized, 0.5, 0)
+    
         #  ####################################################################
         if results.multi_hand_landmarks is not None:
             for hand_landmarks, handedness in zip(results.multi_hand_landmarks,
@@ -185,12 +196,18 @@ def main():
                 elif hand_gesture == 4:  # GDSC Sign point
                     perform_action("GDSC")  # CLose Program
                 elif hand_gesture == 3:  # DevCOn OK   
-                    time.sleep(1)
+                    time.sleep(2)
                     newIMg = cv.cvtColor(image, cv.COLOR_BGR2RGB)
                     cv.imshow("Captured Image", newIMg)
                     cv.waitKey(2000)
                     time.sleep(3)
                     cv.destroyWindow('Captured Image')
+
+                    image_filename = os.path.join(images_folder_path, f"captured_image_{image_counter}.jpg")
+
+                    cv.imwrite(image_filename, newIMg)
+                    # Increment the image counter
+                    image_counter += 1
 
                 if point_gesture_id == 1:
                     print("ClockWise")
@@ -199,11 +216,13 @@ def main():
         else:
             point_history.append([0, 0])
 
+       
         debug_image = draw_point_history(debug_image, point_history)
         debug_image = draw_info(debug_image, fps, mode, number)
+        combined_frame_with_info = cv.addWeighted(combined_frame, 1, debug_image, 0.5, 0)
 
         # Screen reflection #############################################################
-        cv.imshow('Hand Gesture Recognition', debug_image)
+        cv.imshow('Hand Gesture Recognition', combined_frame_with_info)
 
 
 
