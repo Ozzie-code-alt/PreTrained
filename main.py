@@ -5,7 +5,7 @@ import copy
 import argparse
 import itertools
 import keyboard
-import pyautogui
+import time
 from collections import Counter
 from collections import deque
 
@@ -177,13 +177,21 @@ def main():
                 hand_gesture = keypoint_classifier(pre_processed_landmark_list)
                 point_gesture_id = point_history_classifier(pre_processed_point_history_list)
                 # print(hand_gesture)
-                # print(hand_sign_id)
+                print(hand_sign_id)
                 if hand_gesture == 2:  # Point up
                     perform_action("thumbs_up")  # Volume Up
                 elif hand_gesture == 1:  # ClosedFist point
                     perform_action("ok_point")  # Volume Down
                 elif hand_gesture == 4:  # GDSC Sign point
                     perform_action("GDSC")  # CLose Program
+                elif hand_gesture == 3:  # DevCOn OK   
+                    time.sleep(1)
+                    newIMg = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+                    cv.imshow("Captured Image", newIMg)
+                    cv.waitKey(2000)
+                    time.sleep(3)
+                    cv.destroyWindow('Captured Image')
+
                 if point_gesture_id == 1:
                     print("ClockWise")
                 elif point_gesture_id == 2:
