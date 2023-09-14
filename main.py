@@ -131,10 +131,11 @@ def main():
         image.flags.writeable = False
         results = hands.process(image)
         image.flags.writeable = True
-        overlay_image_resized = cv.resize(overlay_image, (image.shape[1], image.shape[0]))
+        image2 = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+        overlay_image_resized = cv.resize(overlay_image, (image2.shape[1], image2.shape[0]))
     
     # Combine the frame and the overlay image
-        combined_frame = cv.addWeighted(image, 1, overlay_image_resized, 0.5, 0)
+        combined_frame = cv.addWeighted(image2, 1, overlay_image_resized, 0.5, 0)
     
         #  ####################################################################
         if results.multi_hand_landmarks is not None:
@@ -187,7 +188,7 @@ def main():
                 )
                 hand_gesture = keypoint_classifier(pre_processed_landmark_list)
                 point_gesture_id = point_history_classifier(pre_processed_point_history_list)
-                # print(hand_gesture)
+                print(hand_gesture)
                 print(hand_sign_id)
                 if hand_gesture == 2:  # Point up
                     perform_action("thumbs_up")  # Volume Up
@@ -197,7 +198,13 @@ def main():
                     perform_action("GDSC")  # CLose Program
                 elif hand_gesture == 3:  # DevCOn OK   
                     time.sleep(2)
+
                     newIMg = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+                    overlay_image_resizeds = cv.resize(overlay_image, (newIMg.shape[1], newIMg.shape[0]))
+    
+    # Combine the frame and the overlay image
+                    combined_framed = cv.addWeighted(newIMg, 1, overlay_image_resizeds, 0.5, 0)
+                    
                     cv.imshow("Captured Image", newIMg)
                     cv.waitKey(2000)
                     time.sleep(3)
@@ -205,7 +212,7 @@ def main():
 
                     image_filename = os.path.join(images_folder_path, f"captured_image_{image_counter}.jpg")
 
-                    cv.imwrite(image_filename, newIMg)
+                    cv.imwrite(image_filename, combined_framed)
                     # Increment the image counter
                     image_counter += 1
 
