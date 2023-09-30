@@ -8,7 +8,7 @@ import keyboard
 import time
 from collections import Counter
 from collections import deque
-
+import cvzone 
 import cv2 as cv
 import numpy as np
 import mediapipe as mp
@@ -136,7 +136,7 @@ def main():
     
     # Combine the frame and the overlay image
         combined_frame = cv.addWeighted(image2, 1, overlay_image_resized, 0.5, 0)
-    
+        codey = cv.imread('codey.png', cv.IMREAD_UNCHANGED)
         #  ####################################################################
         if results.multi_hand_landmarks is not None:
             for hand_landmarks, handedness in zip(results.multi_hand_landmarks,
@@ -197,22 +197,23 @@ def main():
                 elif hand_gesture == 4:  # GDSC Sign point
                     perform_action("GDSC")  # CLose Program
                 elif hand_gesture == 3:  # DevCOn OK   
-                    time.sleep(2)
-
+                   
                     newIMg = cv.cvtColor(image, cv.COLOR_BGR2RGB)
                     overlay_image_resizeds = cv.resize(overlay_image, (newIMg.shape[1], newIMg.shape[0]))
     
     # Combine the frame and the overlay image
                     combined_framed = cv.addWeighted(newIMg, 1, overlay_image_resizeds, 0.5, 0)
                     
-                    cv.imshow("Captured Image", newIMg)
+                    final_image = cvzone.overlayPNG(combined_frame, codey, [100,100])
+
+                    cv.imshow("Captured Image", final_image)
                     cv.waitKey(2000)
                     time.sleep(3)
                     cv.destroyWindow('Captured Image')
 
                     image_filename = os.path.join(images_folder_path, f"captured_image_{image_counter}.jpg")
 
-                    cv.imwrite(image_filename, combined_framed)
+                    cv.imwrite(image_filename, final_image)
                     # Increment the image counter
                     image_counter += 1
 
