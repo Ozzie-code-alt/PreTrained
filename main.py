@@ -6,13 +6,15 @@ import argparse
 import itertools
 import keyboard
 import time
-from collections import Counter
-from collections import deque
 import cvzone 
 import cv2 as cv
 import numpy as np
 import mediapipe as mp
 import os
+import pyttsx3
+
+from collections import Counter
+from collections import deque
 from utils import CvFpsCalc
 from model import KeyPointClassifier
 from model import PointHistoryClassifier
@@ -108,6 +110,7 @@ def main():
 # Create the "Images" folder if it doesn't exist
     os.makedirs(images_folder_path, exist_ok=True)
     overlay_image = cv.imread('frame.png')  # Replace with your image's path
+    engine = pyttsx3.init()
 
     while True:
         fps = cvFpsCalc.get()
@@ -197,14 +200,16 @@ def main():
                 elif hand_gesture == 4:  # GDSC Sign point
                     perform_action("GDSC")  # CLose Program
                 elif hand_gesture == 3:  # DevCOn OK   
-                   
+                    engine.say("Perfecto! You've unlocked the Robotopian heart seal! Say 'cheese' or 'circuit' in 3... 2... 1... Snap!")
+                    engine.runAndWait()
+
                     newIMg = cv.cvtColor(image, cv.COLOR_BGR2RGB)
                     overlay_image_resizeds = cv.resize(overlay_image, (newIMg.shape[1], newIMg.shape[0]))
     
     # Combine the frame and the overlay image
                     combined_framed = cv.addWeighted(newIMg, 1, overlay_image_resizeds, 0.5, 0)
                     
-                    final_image = cvzone.overlayPNG(combined_frame, codey, [100,100])
+                    final_image = cvzone.overlayPNG(combined_framed, codey, [100,100])
 
                     cv.imshow("Captured Image", final_image)
                     cv.waitKey(2000)
